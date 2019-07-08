@@ -5,3 +5,5 @@ services:
     build: .
     ports:
       - "3002:80"
+    volumes:
+      - ./src:/usr/share/nginx/html
