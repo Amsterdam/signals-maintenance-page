@@ -31,7 +31,7 @@ node {
 
     stage("Build dockers") {
         steps "build", {
-            def api = docker.build("repo.data.amsterdam.nl/datapunt/signals-maintenance-page:${env.BUILD_NUMBER}", ".")
+            def api = docker.build("build.app.amsterdam.nl:5000/ois/signals-maintenance-page:${env.BUILD_NUMBER}", ".")
             api.push()
             api.push("acceptance")
         }
@@ -45,7 +45,7 @@ if (BRANCH == "master") {
     node {
         stage('Push acceptance image') {
             steps "image tagging", {
-                def image = docker.image("repo.data.amsterdam.nl/datapunt/signals-maintenance-page:${env.BUILD_NUMBER}")
+                def image = docker.image("build.app.amsterdam.nl:5000/ois/signals-maintenance-page:${env.BUILD_NUMBER}")
                 image.pull()
                 image.push("acceptance")
             }
@@ -73,7 +73,7 @@ if (BRANCH == "master") {
     node {
         stage('Push production image') {
             steps "image tagging", {
-                def api = docker.image("repo.data.amsterdam.nl/datapunt/signals-maintenance-page:${env.BUILD_NUMBER}")
+                def api = docker.image("build.app.amsterdam.nl:5000/ois/signals-maintenance-page:${env.BUILD_NUMBER}")
                 api.pull()
                 api.push("production")
                 api.push("latest")
