@@ -23,11 +23,11 @@ node {
         checkout scm
     }
 
-    stage("Test") {
-        steps "Test", {
-            sh "test.sh"
-        }
-    }
+    // stage("Test") {
+    //     steps "Test", {
+    //         sh "test.sh"
+    //     }
+    // }
 
     stage("Build dockers") {
         steps "build", {
