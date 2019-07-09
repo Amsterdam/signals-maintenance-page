@@ -1,6 +1,6 @@
 #!groovy
 
-def tryStep(String message, Closure block, Closure tearDown = null) {
+def steps(String message, Closure block, Closure tearDown = null) {
     try {
         block();
     }
@@ -24,13 +24,13 @@ node {
     }
 
     stage("Test") {
-        tryStep "Test", {
+        steps "Test", {
             sh "test.sh"
         }
     }
 
     stage("Build dockers") {
-        tryStep "build", {
+        steps "build", {
             def api = docker.build("repo.data.amsterdam.nl/datapunt/signals-maintenance-page:${env.BUILD_NUMBER}", "api")
             api.push()
             api.push("acceptance")
@@ -44,7 +44,7 @@ if (BRANCH == "master") {
 
     node {
         stage('Push acceptance image') {
-            tryStep "image tagging", {
+            steps "image tagging", {
                 def image = docker.image("repo.data.amsterdam.nl/datapunt/signals-maintenance-page:${env.BUILD_NUMBER}")
                 image.pull()
                 image.push("acceptance")
@@ -54,7 +54,7 @@ if (BRANCH == "master") {
 
     node {
         stage("Deploy to ACC") {
-            tryStep "deployment", {
+            steps "deployment", {
                 build job: 'Subtask_Openstack_Playbook',
                 parameters: [
                     [$class: 'StringParameterValue', name: 'INVENTORY', value: 'acceptance'],
@@ -72,7 +72,7 @@ if (BRANCH == "master") {
 
     node {
         stage('Push production image') {
-            tryStep "image tagging", {
+            steps "image tagging", {
                 def api = docker.image("repo.data.amsterdam.nl/datapunt/signals-maintenance-page:${env.BUILD_NUMBER}")
                 api.pull()
                 api.push("production")
@@ -83,7 +83,7 @@ if (BRANCH == "master") {
 
     node {
         stage("Deploy") {
-            tryStep "deployment", {
+            steps "deployment", {
                 build job: 'Subtask_Openstack_Playbook',
                 parameters: [
                         [$class: 'StringParameterValue', name: 'INVENTORY', value: 'production'],
