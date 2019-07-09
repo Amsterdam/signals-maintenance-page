@@ -31,7 +31,7 @@ node {
 
     stage("Build dockers") {
         steps "build", {
-            def api = docker.build("repo.data.amsterdam.nl/datapunt/signals-maintenance-page:${env.BUILD_NUMBER}", "api")
+            def api = docker.build("repo.data.amsterdam.nl/datapunt/signals-maintenance-page:${env.BUILD_NUMBER}", ".")
             api.push()
             api.push("acceptance")
         }
